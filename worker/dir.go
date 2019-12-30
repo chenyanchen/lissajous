@@ -1,7 +1,7 @@
 // Revision history:
 //     Init: 2019/12/1    Jon Snow
 
-package engine
+package worker
 
 import (
 	"os"

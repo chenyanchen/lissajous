@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"image/jpeg"
 	"os"
+	"path/filepath"
 	"runtime"
 )
 
@@ -35,10 +36,8 @@ func init() {
 	e := flag.Bool("e", false, "运行环境")
 	h := flag.Bool("h", false, "使用说明")
 
-	flag.StringVar(&source, "d", ".", "指定需要转换的文件名称或文件夹")
-	flag.Parse()
-
-	flag.StringVar(&output, "o", source+"_converted", "输出文件夹")
+	flag.StringVar(&source, "", "", "指定需要转换的文件名称或文件夹")
+	flag.StringVar(&output, "o", "", "输出文件夹")
 	flag.IntVar(&quality, "q", jpeg.DefaultQuality, "输出图片的质量(0~100)")
 
 	flag.Parse()
@@ -56,6 +55,14 @@ func init() {
 		}
 
 		os.Exit(0)
+	}
+
+	if source == "" {
+		if len(os.Args) > 1 {
+			source = os.Args[len(os.Args)-1]
+		} else {
+			source = filepath.Dir(os.Args[0])
+		}
 	}
 
 	runtime.GOMAXPROCS(runtime.NumCPU())

@@ -5,16 +5,23 @@ package main
 
 import (
 	"image/jpeg"
+	_ "net/http"
 
-	"github.com/JonSnow47/lissajous/engine"
+	"lissajous/engine"
+	"lissajous/scheduler"
+	"lissajous/worker"
 )
 
 func main() {
-	e := engine.New(&engine.Options{
-		Source:  source,
-		Output:  output,
-		JpegOpt: &jpeg.Options{Quality: quality},
-	})
+	e := &engine.ConcurrentEngine{
+		WorkerNum: 10,
+		Scheduler: &scheduler.Simple{},
+	}
 
-	e.Run()
+	e.Run(engine.Task{
+		Src:        source,
+		Dst:        output,
+		JpegOpt:    &jpeg.Options{Quality: quality},
+		WorkerFunc: worker.Worker,
+	})
 }

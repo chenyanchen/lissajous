@@ -1,99 +1,78 @@
 // Revision history:
-//     Init: 2019/12/1    Jon Snow
+//     Init: 2019/12/6    Jon Snow
 
 package engine
 
 import (
-	"image/jpeg"
 	"log"
-	"os"
-	"strings"
 )
 
-type Engine struct {
-	queue  []string
-	source string
-	output string
-
-	jpegOpt *jpeg.Options
+type ReadyNotifier interface {
+	WorkerReady(chan Task)
 }
 
-type Options struct {
-	Source  string
-	Output  string
-	JpegOpt *jpeg.Options
+type Scheduler interface {
+	// get worker from scheduler
+	WorkerChan() chan Task
+	// tell scheduler worker is ready
+	ReadyNotifier
+	// submit tasks to scheduler
+	Submit(Task)
+	// init scheduler and run
+	Run()
 }
 
-func New(opt *Options) *Engine {
-	e := &Engine{
-		source: ".",
-		output: ".output",
-	}
-
-	if opt != nil {
-		e.source = opt.Source
-		e.output = opt.Output
-
-		if opt.JpegOpt != nil {
-			e.jpegOpt = opt.JpegOpt
-		}
-	}
-
-	e.queue = []string{e.source}
-
-	return e
+type ConcurrentEngine struct {
+	WorkerNum int
+	Scheduler Scheduler
 }
 
-func (e *Engine) targetPath(path string) string {
-	return strings.Replace(path, e.source, e.output, 1)
-}
+func (e *ConcurrentEngine) Run(seeds ...Task) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("[E] %v", r)
+		}
+		log.Println("Finish")
+	}()
 
-func (e *Engine) Run() {
-	for len(e.queue) > 0 {
-		cur := e.queue[0]
-		e.queue = e.queue[1:]
+	out := make(chan Result)
 
-		e.worker(cur)
+	e.Scheduler.Run()
+
+	for i := 0; i < e.WorkerNum; i++ {
+		createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
+	}
+
+	for _, task := range seeds {
+		e.Scheduler.Submit(task)
+	}
+
+	itemCounter := 0
+	for result := range out {
+		for _, task := range result.Tasks {
+			e.Scheduler.Submit(task)
+		}
+
+		for _, item := range result.Items {
+			itemCounter++
+			log.Printf("[I] #%d %v\n", itemCounter, item)
+		}
 	}
 }
 
-func (e *Engine) worker(path string) {
-	info, err := os.Stat(path)
-	if err != nil {
-		log.Printf("[E] os.Stat(%s): %v", path, err)
-		return
-	}
+func createWorker(in chan Task, out chan<- Result, notifier ReadyNotifier) {
+	go func() {
+		for {
+			notifier.WorkerReady(in)
 
-	if info.IsDir() {
-		files, err := DirOpener(path)
-		if err != nil {
-			log.Printf("[E] DirOpener(%s): %v", path, err)
-			return
-		}
-		e.queue = append(e.queue, files...)
+			task := <-in
 
-		dumpDir := e.targetPath(path)
-		err = os.MkdirAll(dumpDir, os.ModePerm)
-		if err != nil {
-			log.Printf("[E] os.MkdirAll(%s, %d): %v", path, os.ModePerm, err)
-			return
-		}
-	} else {
-		img, err := ImageReader(path)
-		if err != nil {
-			log.Printf("[E] ImageReader(%s): %v", path, err)
-			return
-		}
+			result, err := task.WorkerFunc(task.Src, task.Dst, task.JpegOpt)
+			if err != nil {
+				continue
+			}
 
-		dstPath := e.targetPath(path)
-		names := strings.Split(dstPath, ".")
-		names[len(names)-1] = JPEG
-		dstPath = strings.Join(names, ".")
-
-		err = JPEGConverter(dstPath, img, e.jpegOpt)
-		if err != nil {
-			log.Printf("[E] JPEGConverter(%s): %v", path, err)
-			return
+			out <- result
 		}
-	}
+	}()
 }

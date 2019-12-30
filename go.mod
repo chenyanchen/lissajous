@@ -1,3 +1,3 @@
-module github.com/JonSnow47/lissajous
+module lissajous
 
 go 1.13

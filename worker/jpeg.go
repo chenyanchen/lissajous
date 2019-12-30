@@ -1,7 +1,7 @@
 // Revision history:
 //     Init: 2019/12/1    Jon Snow
 
-package engine
+package worker
 
 import (
 	"image"
@@ -11,8 +11,8 @@ import (
 
 const JPEG = "jpeg"
 
-func JPEGConverter(output string, img image.Image, opt *jpeg.Options) error {
-	newFile, err := os.Create(output)
+func JPEGConverter(dst string, img image.Image, opt *jpeg.Options) error {
+	newFile, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
