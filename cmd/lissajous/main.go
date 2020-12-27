@@ -18,7 +18,7 @@ import (
 
 const (
 	appName = "Lissajous"
-	version = "0.1.1"
+	version = "1.0.0"
 )
 
 var (
