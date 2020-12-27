@@ -1,19 +1,21 @@
 # lissajous
 
-将格式为 jpg, png, jpeg, gif 的图片转为 jpeg 格式的工具
+Lissajous is an image convertor.
 
-## Abstract
+Convert your images into jpeg(jpg), current supported image formats is jpeg,
+jpg, png, gif.
 
-Lissajous 帮助您将 jpg, png, gif 格式的图片转为更小的 jpeg 图片
+## Usage
 
-##  Usage
+| Parameter | Type   | Description                                                                                           | 
+| --------- | ------ | ----------------------------------------------------------------------------------------------------- | 
+| -dst      | string | set the destination directory path (default "tmp")                                                    |
+| -env      |        | print runtime environment                                                                             |
+| -h        |        | usage of lissajous                                                                                    |
+| -q        | int    | set the quality of the converted image, ranges from 1 to 100 inclusive, higher is better (default 75) |
+| -src      | string | set the source directory or image file path (default ".")                                             |
+| -v        |        | print lissajous version                                                                               |
 
-| 参数 | 类型   | 说明                            | 默认值      |
-| ---- | ------ | ------------------------------- | ----------- |
-| -d   | string | 指定需要转换的文件名称或文件夹  | .           |
-| -e   |        | 查看当前运行环境                |             |
-| -h   |        | 查看使用方法                    |             |
-| -o   | string | 输出到文件夹                    | ._converted |
-| -q   | int    | 输出的图片质量为原图片的 1~100% | 75          |
-| -v   |        | 查看当前版本                    |             |
+## Build
 
+`make build`

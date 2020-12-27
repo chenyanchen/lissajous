@@ -1,5 +1,9 @@
 #!/bin/sh
 
+#
+# Copyright 2020 Singularity, Inc. All rights reserved.
+#
+
 # build on Mac OS
 
 # build darwin OS execable file
