@@ -16,10 +16,10 @@ build: build-lissajous build-dir-cleaner
 
 # TODO: build executable file with scripts
 build-lissajous:
-	go build $(GOFLAGS) -ldflags '$(GOLDFLAGS)' -o '$(BINDIR)'/$(LISSAJOUS) ./cmd/lissajous
+	go build $(GOFLAGS) -ldflags '$(GOLDFLAGS)' -o $(BINDIR)/$(LISSAJOUS) ./cmd/lissajous
 
 build-dir-cleaner:
-	go build $(GOFLAGS) -ldflags '$(GOLDFLAGS)' -o '$(BINDIR)'/$(DIRECTORY_CLEANER) ./cmd/directory_cleaner
+	go build $(GOFLAGS) -ldflags '$(GOLDFLAGS)' -o $(BINDIR)/$(DIRECTORY_CLEANER) ./cmd/directory_cleaner
 
 .PHONY: release
 release:

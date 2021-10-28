@@ -6,7 +6,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/JonSnow47/lissajous/pkg/directory"
+	"github.com/chenyanchen/lissajous/pkg/directory"
 )
 
 var path string

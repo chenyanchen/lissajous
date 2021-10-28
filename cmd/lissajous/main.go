@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/JonSnow47/lissajous/cmd/lissajous/internal"
-	"github.com/JonSnow47/lissajous/pkg/directory"
+	"github.com/chenyanchen/lissajous/cmd/lissajous/internal"
+	"github.com/chenyanchen/lissajous/pkg/directory"
 )
 
 const (

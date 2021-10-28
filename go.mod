@@ -1,3 +1,3 @@
-module github.com/JonSnow47/lissajous
+module github.com/chenyanchen/lissajous
 
-go 1.15
+go 1.17

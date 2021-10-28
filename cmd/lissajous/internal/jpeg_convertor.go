@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/JonSnow47/lissajous/ximage"
+	"github.com/chenyanchen/lissajous/ximage"
 )
 
 type jpegConvertor struct {

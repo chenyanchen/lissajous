@@ -16,4 +16,3 @@ func OpenFromFile(path string) (image.Image, string, error) {
 
 	return image.Decode(file)
 }
-
